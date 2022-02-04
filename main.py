@@ -3,7 +3,13 @@ from flask_cors import CORS
 import requests
 import time
 
-URL = "http://newnlp.cogsys.company/api/v1/"
+from dotenv import load_dotenv
+load_dotenv()
+import os
+
+
+URL = os.getenv("API_NLP")
+print(URL)
 app = Flask(__name__)
 CORS(app)
 t_sleep = 0.3  # Частота обращения к api, пока не сформирован результат
