@@ -5,7 +5,7 @@ import os
 def create_xlsx(data):
     num, b_i = sum([len(files) for r, d, files in os.walk("tmp")]), 1
 
-    workbook = xlsxwriter.Workbook('tmp/file{0}.xlsx'.format(str(num + 1)))
+    workbook = xlsxwriter.Workbook('tmp/file{0}.xlsx'.format(str(num)))
     worksheet = workbook.add_worksheet('Data')
     for i, el in enumerate([30, 15, 45, 30, 30, 30]):
         worksheet.set_column(i, i, el)
