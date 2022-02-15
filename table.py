@@ -80,9 +80,7 @@ def create_table(data):
 
                 dt, ent, kw = [], [], []
                 # Заполняем поля datetime и пр. сущности для каждого предложения
-                print(j['lemmas'])
                 for k in data['nlp'][i]['entities']:
-                    print(k)
                     K_temp = k['name'].lower().split()
                     check = True
 
@@ -105,7 +103,7 @@ def create_table(data):
 
                 sent.update({'date/time': dt, 'rest entities': ent, 'keywords': kw})
                 sent_arr.append(sent)
-                (print('\n\n'))
+
             temp['sentences'] = sent_arr
             Table.append(temp)
 
