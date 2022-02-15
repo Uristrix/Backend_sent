@@ -65,7 +65,7 @@ def get_valid_paragraph(phrases, keywords):
 
 def create_table(data):
     Table = []
-    # print(data['nlp'])
+    print(data['nlp'])
 
     for i in range(len(data['nlp'])):
         temp = get_valid_paragraph(data['phrases'], data['nlp'][i]['sentences'])
@@ -80,24 +80,32 @@ def create_table(data):
 
                 dt, ent, kw = [], [], []
                 # Заполняем поля datetime и пр. сущности для каждого предложения
+                print(j['lemmas'])
                 for k in data['nlp'][i]['entities']:
+                    print(k)
+                    K_temp = k['name'].lower().split()
+                    check = True
 
-                    if k['name'].lower() in j['lemmas']:
+                    for m in K_temp:
+                        if m not in j['lemmas']:
+                            check = False
+
+                    if check:
                         if (k['type'] == 'date' or k['type'] == 'time') and k['name'] not in dt:
                             dt.append(k['name'])
 
-                        elif k['type'] not in ent:
-                            ent.append(k['type'])
+                        elif k['name'] not in ent:
+                            ent.append(k['name'])
 
                 # Заполняем keywords, которые встретились у конкретного предложения
-                for k in data['nlp'][i]['keywords']:  #
+                for k in data['nlp'][i]['keywords']:
                     for m in k['phrase'].split('|'):
                         if m not in kw and m in j['lemmas']:
                             kw.append(m)
 
                 sent.update({'date/time': dt, 'rest entities': ent, 'keywords': kw})
                 sent_arr.append(sent)
-
+                (print('\n\n'))
             temp['sentences'] = sent_arr
             Table.append(temp)
 
