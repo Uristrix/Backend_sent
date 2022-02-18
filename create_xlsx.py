@@ -44,10 +44,10 @@ def create_xlsx(data):
 
     for i, el in enumerate(data['data']):
         worksheet.merge_range(b_i, 0, b_i + len(el['sentences']) - 1, 0, ', '.join(el['key phrases']), style2)
-        worksheet.merge_range(b_i, 1, b_i + len(el['sentences']) - 1, 1, el['paragraph num'], style2)
+        worksheet.merge_range(b_i, 1, b_i + len(el['sentences']) - 1, 1, ', '.join(el['paragraph num']), style2)
 
         for j, el2 in enumerate(el['sentences']):
-            worksheet.write(b_i + j, 2, el2['text'], style3)
+            worksheet.write(b_i + j, 2, ', '.join(el2['text']), style3)
             worksheet.write(b_i + j, 3, ', '.join(el2['date/time']), style3)
             worksheet.write(b_i + j, 4, ', '.join(el2['rest entities']), style3)
             worksheet.write(b_i + j, 5, ', '.join(el2['keywords']), style3)

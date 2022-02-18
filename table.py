@@ -46,7 +46,8 @@ def get_data(phrases, paragraphs):
 
 def get_valid_paragraph(phrases, keywords):
     result, all_kw = [], []
-
+    print(phrases)
+    print(keywords)
     for i in keywords:
         all_kw.extend(i['lemmas'])
 
@@ -72,11 +73,11 @@ def create_table(data):
 
         # проверяем валидность абзаца
         if temp['key phrases']:
-            temp['paragraph num'] = i + 1
+            temp['paragraph num'] = [i + 1]
             sent_arr = []
 
             for j in data['nlp'][i]['sentences']:
-                sent = {'text': j['text']}
+                sent = {'text': [j['text']]}
 
                 dt, ent, kw = [], [], []
                 # Заполняем поля datetime и пр. сущности для каждого предложения
@@ -108,3 +109,19 @@ def create_table(data):
             Table.append(temp)
 
     return {"data": Table}
+
+
+# def get_dop_phrases(dop_phrases, sent_lemm):
+#     Lemmas_phrases = []
+#     for el in dop_phrases:
+#         req = post_lemmas(el)
+#         task_id = req['result']
+#
+#         while get_status(task_id) == 'PENDING':
+#             time.sleep(t_sleep)
+#
+#         if get_status(task_id) == 'SUCCESS':
+#             Lemmas_phrases.append({'text': el, 'lemmas': get_result(task_id)['lemmas']})
+#
+#
+#     return {}
