@@ -5,9 +5,13 @@ import os
 def create_xlsx(data):
     num, b_i = sum([len(files) for r, d, files in os.walk("tmp")]), 1
 
-    workbook = xlsxwriter.Workbook('tmp/file{0}.xlsx'.format(str(num)))
+    workbook = xlsxwriter.Workbook('tmp/file{0}.xlsx'.format(str(num + 1)))
     worksheet = workbook.add_worksheet('Data')
-    for i, el in enumerate([30, 15, 45, 30, 30, 30]):
+
+    len_phr = len(list(data['data'][0].keys())) - 3
+    arr = [30] + [30 for i in range(len_phr)] + [15, 45, 30, 30, 30]
+
+    for i, el in enumerate(arr):
         worksheet.set_column(i, i, el)
 
     style = workbook.add_format({
@@ -37,20 +41,18 @@ def create_xlsx(data):
         'text_wrap': 1
     })
 
-    header = list(data['data'][0].keys())[:-1] + list(data['data'][0]['sentences'][0].keys())
-
+    header = list(data['data'][0].keys()) + list(data['data'][0]['sentences'][0].keys())[1:]
     for i, el in enumerate(header):
         worksheet.write(0, i, el, style)
 
     for i, el in enumerate(data['data']):
-        worksheet.merge_range(b_i, 0, b_i + len(el['sentences']) - 1, 0, ', '.join(el['key phrases']), style2)
-        worksheet.merge_range(b_i, 1, b_i + len(el['sentences']) - 1, 1, ', '.join(el['paragraph num']), style2)
+        for j, el2 in enumerate(el):
+            if j != len(el) - 1:
+                worksheet.merge_range(b_i, j, b_i + len(el['sentences']) - 1, j, ', '.join(el[el2]), style2)
 
         for j, el2 in enumerate(el['sentences']):
-            worksheet.write(b_i + j, 2, ', '.join(el2['text']), style3)
-            worksheet.write(b_i + j, 3, ', '.join(el2['date/time']), style3)
-            worksheet.write(b_i + j, 4, ', '.join(el2['rest entities']), style3)
-            worksheet.write(b_i + j, 5, ', '.join(el2['keywords']), style3)
+            for k, el3 in enumerate(el2, 2):
+                worksheet.write(b_i + j, k + len_phr, ', '.join(el2[el3]), style3)
 
         b_i += len(el['sentences'])
     workbook.close()

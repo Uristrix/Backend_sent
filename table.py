@@ -5,7 +5,7 @@ import time
 t_sleep = 0.3
 
 
-def get_data(phrases, paragraphs):
+def lemmas(phrases):
     # Нахождение лемм для ключевых фраз
     Lemmas_phrases = []
     for el in phrases:
@@ -18,7 +18,10 @@ def get_data(phrases, paragraphs):
         if get_status(task_id) == 'SUCCESS':
             Lemmas_phrases.append({'text': el, 'lemmas': get_result(task_id)['lemmas']})
 
-    # Прогоняем абзацы через апишку и находим леммы для каждого предложения
+    return Lemmas_phrases
+
+
+def nlp(paragraphs):
     Nlp_paragraphs = []
     for el in paragraphs:
         req = post_nlp(el)
@@ -41,13 +44,18 @@ def get_data(phrases, paragraphs):
                 if get_status(task_id) == 'SUCCESS':
                     sen['lemmas'] = get_result(task_id)['lemmas']
 
-    return {"phrases": Lemmas_phrases, "nlp": Nlp_paragraphs}
+    return Nlp_paragraphs
+
+
+def get_data(phrases, paragraphs, other_phrases):
+    for el in other_phrases:
+        other_phrases[el] = lemmas(other_phrases[el])
+
+    return {"phrases": lemmas(phrases), "nlp": nlp(paragraphs), 'other_phrases': other_phrases}
 
 
 def get_valid_paragraph(phrases, keywords):
     result, all_kw = [], []
-    print(phrases)
-    print(keywords)
     for i in keywords:
         all_kw.extend(i['lemmas'])
 
@@ -66,16 +74,23 @@ def get_valid_paragraph(phrases, keywords):
 
 def create_table(data):
     Table = []
-    print(data['nlp'])
 
     for i in range(len(data['nlp'])):
         temp = get_valid_paragraph(data['phrases'], data['nlp'][i]['sentences'])
-
         # проверяем валидность абзаца
         if temp['key phrases']:
-            temp['paragraph num'] = [i + 1]
-            sent_arr = []
+            # проходим по валидным абзацам и ищем в них дополнительные фразы
+            for el in data['other_phrases']:
+                temp2 = get_valid_paragraph(data['other_phrases'][el], data['nlp'][i]['sentences'])
+                if temp2:
+                    temp[el] = temp2['key phrases']
+                else:
+                    temp[el] = []
 
+            temp['paragraph num'] = [str(i + 1)]
+
+            # заполняем предложения
+            sent_arr = []
             for j in data['nlp'][i]['sentences']:
                 sent = {'text': [j['text']]}
 
@@ -102,26 +117,10 @@ def create_table(data):
                         if m not in kw and m in j['lemmas']:
                             kw.append(m)
 
-                sent.update({'date/time': dt, 'rest entities': ent, 'keywords': kw})
+                sent.update({'date/time': dt, 'keywords': kw, 'rest entities': ent})
                 sent_arr.append(sent)
 
             temp['sentences'] = sent_arr
             Table.append(temp)
 
     return {"data": Table}
-
-
-# def get_dop_phrases(dop_phrases, sent_lemm):
-#     Lemmas_phrases = []
-#     for el in dop_phrases:
-#         req = post_lemmas(el)
-#         task_id = req['result']
-#
-#         while get_status(task_id) == 'PENDING':
-#             time.sleep(t_sleep)
-#
-#         if get_status(task_id) == 'SUCCESS':
-#             Lemmas_phrases.append({'text': el, 'lemmas': get_result(task_id)['lemmas']})
-#
-#
-#     return {}
