@@ -74,18 +74,14 @@ def get_valid_paragraph(phrases, keywords):
 
 def create_table(data):
     Table = []
+    # for i in range(len(data['nlp'])):
+    #     print(data['nlp'][i]['sentences'])
 
     for i in range(len(data['nlp'])):
         temp = get_valid_paragraph(data['phrases'], data['nlp'][i]['sentences'])
         # проверяем валидность абзаца
         if temp['key phrases']:
-            # проходим по валидным абзацам и ищем в них дополнительные фразы
-            for el in data['other_phrases']:
-                temp2 = get_valid_paragraph(data['other_phrases'][el], data['nlp'][i]['sentences'])
-                if temp2:
-                    temp[el] = temp2['key phrases']
-                else:
-                    temp[el] = []
+            
 
             temp['paragraph num'] = [str(i + 1)]
 
@@ -93,6 +89,14 @@ def create_table(data):
             sent_arr = []
             for j in data['nlp'][i]['sentences']:
                 sent = {'text': [j['text']]}
+
+                # проходим по валидным  и ищем в них дополнительные фразы
+                for el in data['other_phrases']:
+                    temp2 = get_valid_paragraph(data['other_phrases'][el],[j])
+                    if temp2:                    
+                        sent.update({el : temp2['key phrases']})
+                    else:
+                        sent.update({el : []})
 
                 dt, ent, kw = [], [], []
                 # Заполняем поля datetime и пр. сущности для каждого предложения

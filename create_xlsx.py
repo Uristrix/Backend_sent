@@ -8,9 +8,8 @@ def create_xlsx(data):
     workbook = xlsxwriter.Workbook('tmp/file{0}.xlsx'.format(str(num + 1)))
     worksheet = workbook.add_worksheet('Data')
 
-    len_phr = len(list(data['data'][0].keys())) - 3
-    arr = [30] + [30 for i in range(len_phr)] + [15, 45, 30, 30, 30]
-
+    len_phr = len(list(data['data'][0]['sentences'][0].keys())) - 1
+    arr = [30, 15, 45] + [30 for _ in range(len_phr)]
     for i, el in enumerate(arr):
         worksheet.set_column(i, i, el)
 

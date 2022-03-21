@@ -25,6 +25,7 @@ def table():
     other_phrases = {}
     for el in Req:
         other_phrases[el] = Req[el].split(',')
+        
     Table = create_table(get_data(Phrases, Paragraphs, other_phrases))
 
     return Table
