@@ -74,8 +74,6 @@ def get_valid_paragraph(phrases, keywords):
 
 def create_table(data):
     Table = []
-    # for i in range(len(data['nlp'])):
-    #     print(data['nlp'][i]['sentences'])
 
     for i in range(len(data['nlp'])):
         temp = get_valid_paragraph(data['phrases'], data['nlp'][i]['sentences'])
@@ -90,7 +88,7 @@ def create_table(data):
             for j in data['nlp'][i]['sentences']:
                 sent = {'text': [j['text']]}
 
-                # проходим по валидным  и ищем в них дополнительные фразы
+                # проходимся по валидным предложениям и ищем в них дополнительные фразы
                 for el in data['other_phrases']:
                     temp2 = get_valid_paragraph(data['other_phrases'][el],[j])
                     if temp2:                    
