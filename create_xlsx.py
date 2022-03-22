@@ -10,6 +10,7 @@ def create_xlsx(data):
 
     len_phr = len(list(data['data'][0]['sentences'][0].keys())) - 1
     arr = [30, 15, 45] + [30 for _ in range(len_phr)]
+
     for i, el in enumerate(arr):
         worksheet.set_column(i, i, el)
 
@@ -51,7 +52,7 @@ def create_xlsx(data):
 
         for j, el2 in enumerate(el['sentences']):
             for k, el3 in enumerate(el2, 2):
-                worksheet.write(b_i + j, k + len_phr, ', '.join(el2[el3]), style3)
+                worksheet.write(b_i + j, k, ', '.join(el2[el3]), style3)
 
         b_i += len(el['sentences'])
     workbook.close()
