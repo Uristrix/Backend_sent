@@ -47,8 +47,11 @@ def create_xlsx(data):
 
     for i, el in enumerate(data['data']):
         for j, el2 in enumerate(el):
-            if j != len(el) - 1:
-                worksheet.merge_range(b_i, j, b_i + len(el['sentences']) - 1, j, ', '.join(el[el2]), style2)
+            if el2 != 'sentences':
+                if len(el['sentences']) != 1:
+                    worksheet.merge_range(b_i, j, b_i + len(el['sentences']) - 1, j, ', '.join(el[el2]), style2)
+                else:
+                    worksheet.write(b_i, j, ', '.join(el[el2]), style2)
 
         for j, el2 in enumerate(el['sentences']):
             for k, el3 in enumerate(el2, 2):
