@@ -5,6 +5,7 @@ from create_xlsx import *
 
 app = Flask(__name__)
 CORS(app)
+load_dotenv()
 
 
 @app.route('/')
@@ -39,5 +40,5 @@ def xlsx():
     return send_from_directory('tmp', path=f'file{num}.xlsx')
 
 
-if __name__ == "__main__":
-    app.run(host=os.getenv('HOST'), port=os.getenv("PORT"))
+# if __name__ == "__main__":
+#     app.run(host=os.getenv('HOST'), port=os.getenv("PORT"))
